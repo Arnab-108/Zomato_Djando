@@ -57,6 +57,7 @@
 </head>
 
 <body>
+
     <div class="take-order-form">
         <h1>Take New Order</h1>
         <form method="post">
@@ -68,11 +69,11 @@
 
             <h2>Select Dishes:</h2>
             <div class="dish-list">
-                {% for dish_id, dish in menu.items %}
+                {% for item in menu_items %}
                 <div class="dish-item">
-                    <input type="checkbox" id="dish_{{ dish_id }}" name="selected_dishes" value="{{ dish_id }}"
+                    <input type="checkbox" id="{{ item.id }}" name="selected_dishes" value="{{ item.id }}"
                         class="input-checkbox">
-                    <label for="dish_{{ dish_id }}" class="dish-label">{{ dish.name }} - ${{ dish.price }}</label>
+                    <label for="{{ item.id }}" class="dish-label">{{ item.dish_name }} - ${{ item.price }}</label>
                 </div>
                 {% endfor %}
             </div>
@@ -84,3 +85,20 @@
 </body>
 
 </html>
+
+<!-- <h1>Menu</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="customer_name">Customer Name:</label>
+    <input type="text" name="customer_name" required><br>
+    
+    <ul>
+        {% for item in menu_items %}
+            <li>
+                <input type="checkbox" name="selected_dishes" value="{{ item.id }}">
+                <strong>{{ item.dish_name }}</strong> - Price: ${{ item.price }}
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <input type="submit" value="Place Order"> -->

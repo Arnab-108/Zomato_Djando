@@ -1,11 +1,11 @@
+{% load zomato_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zesty Zomato Menu</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Zomato</title>
     <script src="https://kit.fontawesome.com/1f971e42f5.js" crossorigin="anonymous"></script>
     <style>
         .menu-container,
@@ -121,7 +121,7 @@
 
         .action-buttons {
             display: flex;
-            justify-content:space-around;
+            justify-content: space-around;
             margin-top: 30px;
         }
 
@@ -151,56 +151,61 @@
 </head>
 
 <body>
-    {% block content %}
+    <!-- <h1>Menu</h1>
+    <ul>
+        {% for item in menu_items %}
+            <li>
+                <strong>{{ item.dish_name }}</strong>
+                Price: ${{ item.price }}
+                Availability: {% if item.availability %}Available{% else %}Not Available{% endif %}
+                <a href="{% url 'update' item.id %}"><button>Update</button></a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_dish' %}"><button>Add New Dish</button></a> -->
     <div class="menu-container">
         <h1><i class="fas fa-utensils" style="color: #e74c3c;"></i> Menu</h1>
         <div class="menu-items">
-            {% for dish_id, dish in menu.items %}
+            {% for item in menu_items %}
             <div class="menu-item">
                 <div class="menu-details">
-                    <h3>{{ dish.name }}</h3>
-                    <p>${{ dish.price }}</p>
+                    <h3>{{ item.dish_name }}</h3>
+                    <p>${{ item.price }}</p>
                     <span class="availability {% if dish.available %}available{% else %}unavailable{% endif %}">
-                        {% if dish.available %}Available{% else %}Not Available{% endif %}
+                        {% if item.availability %}Available{% else %}Not Available{% endif %}
                     </span>
                 </div>
                 <div class="menu-actions">
                     <button>
-                        <a class="action" href="{% url 'remove_dish' dish_id %}">Remove</a>
+                        <a class="action" href="{% url 'remove_dish' dish_id=item.id|stringformat:'s' %}">Remove</a>
                     </button>
-                    <button>
-                        <a class="action" href="{% url 'update_availability' dish_id %}">Update Availability</a>
-                    </button>
+                    <a href="{% url 'update' item.id %}"><button>Update</button></a>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-
     <div class="order-container">
         <h1><i class="fas fa-clipboard-list" style="color: #3498db;"></i>
             Orders</h1>
         <div class="orders">
-            {% for order_id, order_data in orders.items %}
+            {% for order in orders %}
             <div class="order">
                 <p><strong>Order ID:</strong> {{ order_id }}</p>
-                <p><strong>Customer:</strong> {{ order_data.order.customer_name }}</p>
-                <p><strong>Dishes:</strong> {{ order_data.order.dishes|join:", " }}</p>
-                <p><strong>Status:</strong> {{ order_data.status }}</p>
-                {% if order_data.status != 'done' %}
-                <a class="status-action" href="{% url 'update_status' order_id %}">Mark as Done</a>
-                {% endif %}
+                <p><strong>Customer:</strong> {{ order.customer_name }}</p>
+                <p><strong>Dishes:</strong> {% for dish_id in order.dish_ids %}
+                    {{ dish_id|get_dish_name }},
+                {% endfor %}</p>
+                <p><strong>Status:</strong> {{ order.status }}</p>
+                <a class="status-action" href="{% url 'update_status' order.id %}">Update Status</a>
             </div>
             {% endfor %}
         </div>
-    </div>
+        <div class="action-buttons">
+            <a class="action-button" href="{% url 'take_order' %}"><i class="fas fa-plus"></i> Take New Order</a>
+            <a class="action-button" href="{% url 'add_dish' %}"><i class="fas fa-plus"></i> Add New Dish</a>
+        </div>
 
-    <div class="action-buttons">
-        <a class="action-button" href="{% url 'take_order' %}"><i class="fas fa-plus"></i> Take New Order</a>
-        <a class="action-button" href="{% url 'add_dish' %}"><i class="fas fa-plus"></i> Add New Dish</a>
-    </div>
-    {% endblock %}
 </body>
-<script type="text/javascript" src="script.js"></script>
 
 </html>

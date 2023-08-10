@@ -1,4 +1,6 @@
 from django.shortcuts import render,redirect
+# views.py
+from .models import MenuItem, Order
 
 # Create your views here.
 menu = {
@@ -16,61 +18,59 @@ def get_menu():
 
 # Define the display_menu view
 def display_menu(request):
-    menu = get_menu()
-    context = {'menu': menu, 'orders': orders}
+    menu_items = MenuItem.objects.all()
+    orders = Order.objects.all()
+    context = {'menu_items': menu_items, 'orders': orders}
     return render(request, 'dish.html', context)
 
 def add_dish(request):
     if request.method == 'POST':
-        menu = get_menu()
-        dish_id = len(menu)+1
-        dish_name = request.POST['dish_name']
-        dish_price = float(request.POST['dish_price'])
-        available = request.POST.get('available', False) == 'on'
-        menu[dish_id] = {'name': dish_name, 'price': dish_price, 'available': available}
+        dish_name = request.POST.get('dish_name')
+        price = float(request.POST.get('price'))
+        availability = bool(request.POST.get('availability'))
+        new_dish = MenuItem(dish_name=dish_name, price=price, availability=availability)
+        new_dish.save()
+        print(price)
         return redirect('display_menu')
     return render(request , 'add_dish.html')
 
 def remove_dish(request, dish_id):
-    menu = get_menu()  
-    if dish_id in menu:
-        del menu[dish_id]  
+    dish = MenuItem.objects.get(id=dish_id)
+    dish.delete() 
     return redirect('display_menu')
 
-def update_availability(request, dish_id):
-    menu = get_menu()
-    if dish_id in menu:
-        menu[dish_id]['available'] = not menu[dish_id]['available']
-    return redirect('display_menu')
+def update(request, dish_id):
+    if request.method == 'POST':
+        dish = MenuItem.objects.get(id=dish_id)
+        dish.dish_name = request.POST.get('dish_name')
+        dish.price = float(request.POST.get('price'))
+        dish.availability = bool(request.POST.get('availability'))
+        dish.save()
+        return redirect('display_menu')
+
+    dish = MenuItem.objects.get(id=dish_id)
+    return render(request, 'update.html', {'dish': dish})
 
 def take_order(request):
-    menu = get_menu()  # Get the current menu
     if request.method == 'POST':
-        customer_name = request.POST['customer_name']
-        dish_ids = request.POST.getlist('selected_dishes')
-        new_order = {'customer_name': customer_name, 'dishes': []}
-        for dish_id in dish_ids:
-            if int(dish_id) in menu:
-                new_order['dishes'].append(menu[int(dish_id)]['name'])
-        # Assign a new order ID
-        order_id = len(orders) + 1
-        orders[order_id] = {'order': new_order, 'status': 'received'}
-        print(orders)
-        print(dish_ids)
-        print(new_order)
+        customer_name = request.POST.get('customer_name')
+        selected_dish_ids = request.POST.getlist('selected_dishes')
+        
+        if customer_name and selected_dish_ids:
+            order = Order(customer_name=customer_name, dish_ids=selected_dish_ids, status='received')
+            order.save()
         return redirect('display_menu')
-    return render(request, 'orders.html', {'menu': menu})
+    menu_items = MenuItem.objects.all()
+    return render(request, 'orders.html', {'menu_items': menu_items})
 
 def update_status(request, order_id):
-    if order_id in orders:
-        current_status = orders[order_id]['status']
-        
-        if current_status == 'received':
-            new_status = 'preparing'
-        elif current_status == 'preparing':
-            new_status = 'done'
-        else:
-            new_status = current_status  # Keep the status unchanged if it's already 'done'
-        
-        orders[order_id]['status'] = new_status  # Update the order status in the dictionary
-    return redirect('display_menu')
+    if request.method == 'POST':
+        new_status = request.POST.get('new_status')
+        try:
+            order = Order.objects.get(id=order_id)
+            order.status = new_status
+            order.save()
+            return redirect('display_menu')
+        except Order.DoesNotExist:
+            pass
+    return render(request, 'update_order.html', {'order_id': order_id})

@@ -63,5 +63,14 @@ def take_order(request):
 
 def update_status(request, order_id):
     if order_id in orders:
-        orders[order_id]['status'] = 'done'
+        current_status = orders[order_id]['status']
+        
+        if current_status == 'received':
+            new_status = 'preparing'
+        elif current_status == 'preparing':
+            new_status = 'done'
+        else:
+            new_status = current_status  # Keep the status unchanged if it's already 'done'
+        
+        orders[order_id]['status'] = new_status  # Update the order status in the dictionary
     return redirect('display_menu')

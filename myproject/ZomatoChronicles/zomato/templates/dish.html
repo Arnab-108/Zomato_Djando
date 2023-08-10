@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zesty Zomato Menu</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/1f971e42f5.js" crossorigin="anonymous"></script>
+    <style>
+        .menu-container,
+        .order-container {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .menu-container h1,
+        .order-container h1 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .menu-container h1 i,
+        .order-container h1 i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .menu-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .orders {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 20px;
+        }
+
+        .menu-item,
+        .order {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-details {
+            flex: 1;
+        }
+
+        .menu-item h3 {
+            margin-top: 0;
+        }
+
+        .availability {
+            font-weight: bold;
+        }
+
+        .menu-actions,
+        .order-actions {
+            flex-shrink: 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .menu-actions button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .menu-actions button:hover {
+            background-color: #0056b3;
+        }
+
+        .menu-actions a {
+            text-decoration: none;
+            color: white;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .menu-actions a:hover {
+            text-decoration: none;
+            color: white;
+        }
+
+        .menu-actions button:active {
+            transform: scale(0.95);
+        }
+
+        .status-action {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .status-action:hover {
+            background-color: #0056b3;
+        }
+
+        .status-action:active {
+            transform: scale(0.95);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content:space-around;
+            margin-top: 30px;
+        }
+
+        .action-button {
+            padding: 10px 20px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .action-button i {
+            margin-right: 5px;
+        }
+
+        .action-button:hover {
+            background-color: #219653;
+        }
+
+        .action-button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body>
+    {% block content %}
+    <div class="menu-container">
+        <h1><i class="fas fa-utensils" style="color: #e74c3c;"></i> Menu</h1>
+        <div class="menu-items">
+            {% for dish_id, dish in menu.items %}
+            <div class="menu-item">
+                <div class="menu-details">
+                    <h3>{{ dish.name }}</h3>
+                    <p>${{ dish.price }}</p>
+                    <span class="availability {% if dish.available %}available{% else %}unavailable{% endif %}">
+                        {% if dish.available %}Available{% else %}Not Available{% endif %}
+                    </span>
+                </div>
+                <div class="menu-actions">
+                    <button>
+                        <a class="action" href="{% url 'remove_dish' dish_id %}">Remove</a>
+                    </button>
+                    <button>
+                        <a class="action" href="{% url 'update_availability' dish_id %}">Update Availability</a>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="order-container">
+        <h1><i class="fas fa-clipboard-list" style="color: #3498db;"></i>
+            Orders</h1>
+        <div class="orders">
+            {% for order_id, order_data in orders.items %}
+            <div class="order">
+                <p><strong>Order ID:</strong> {{ order_id }}</p>
+                <p><strong>Customer:</strong> {{ order_data.order.customer_name }}</p>
+                <p><strong>Dishes:</strong> {{ order_data.order.dishes|join:", " }}</p>
+                <p><strong>Status:</strong> {{ order_data.status }}</p>
+                {% if order_data.status != 'done' %}
+                <a class="status-action" href="{% url 'update_status' order_id %}">Mark as Done</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a class="action-button" href="{% url 'take_order' %}"><i class="fas fa-plus"></i> Take New Order</a>
+        <a class="action-button" href="{% url 'add_dish' %}"><i class="fas fa-plus"></i> Add New Dish</a>
+    </div>
+    {% endblock %}
+</body>
+<script type="text/javascript" src="script.js"></script>
+
+</html>

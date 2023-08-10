@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add A New Dish</title>
+    <style>
+        .add-dish-form {
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .input-checkbox {
+            margin-right: 5px;
+        }
+
+        .submit-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .submit-button:hover {
+            background-color: #2980b9;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 10px;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="add-dish-form">
+        <h1>Add New Dish</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="dish_name">Dish Name:</label>
+                <input type="text" id="dish_name" name="dish_name" class="input-field" required>
+            </div>
+            <div class="form-group">
+                <label for="dish_price">Dish Price ($):</label>
+                <input type="number" id="dish_price" name="dish_price" class="input-field" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="available">Available:</label>
+                <input type="checkbox" id="available" name="available" class="input-checkbox">
+            </div>
+            <button class="submit-button" type="submit">Add Dish</button>
+        </form>
+        <a class="back-link" href="{% url 'display_menu' %}">Back to Menu</a>
+    </div>
+</body>
+
+</html>

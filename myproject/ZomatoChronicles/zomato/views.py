@@ -44,18 +44,12 @@ def take_order(request):
     if request.method == 'POST':
         customer_name = request.POST.get('customer_name')
         selected_dish_ids = request.POST.getlist('selected_dishes')
-        ratings = request.POST.getlist('ratings')  # Get ratings submitted for each dish
-        reviews = request.POST.getlist('reviews')  # Get reviews submitted for each dish
+        ratings = float(request.POST.get('ratings'))
+        reviews = request.POST.get('reviews') 
         
         if customer_name and selected_dish_ids:
-            order = Order(customer_name=customer_name, dish_ids=selected_dish_ids, status='received')
+            order = Order(customer_name=customer_name, dish_ids=selected_dish_ids, status='received' , rating=ratings , review = reviews)
             order.save()
-
-            # Update the newly created order with ratings and reviews
-            for dish_id, rating, review in zip(selected_dish_ids, ratings, reviews):
-                order.rating = float(rating)
-                order.review = review
-                order.save()
 
         return redirect('display_menu')
 

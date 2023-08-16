@@ -2,21 +2,10 @@ from django.shortcuts import render,redirect
 # views.py
 from .models import MenuItem, Order
 
-# Create your views here.
-menu = {
-    1: {'name': 'Pasta', 'price': 8.99, 'available': True},
-    2: {'name': 'Pizza', 'price': 10.99, 'available': True},
-    3: {'name': 'Burger', 'price': 6.99, 'available': True},
-    4:{'name':'Biriyani','price':11.99, 'available':True},
-    5:{'name':'Chicken  Chap','price':13.99, 'available':True},
-}
-
-orders={}
-# Define the get_menu() function
-def get_menu():
-    return menu
-
 # Define the display_menu view
+chat_history=[]
+
+
 def display_menu(request):
     menu_items = MenuItem.objects.all()
     orders = Order.objects.all()
@@ -55,11 +44,21 @@ def take_order(request):
     if request.method == 'POST':
         customer_name = request.POST.get('customer_name')
         selected_dish_ids = request.POST.getlist('selected_dishes')
+        ratings = request.POST.getlist('ratings')  # Get ratings submitted for each dish
+        reviews = request.POST.getlist('reviews')  # Get reviews submitted for each dish
         
         if customer_name and selected_dish_ids:
             order = Order(customer_name=customer_name, dish_ids=selected_dish_ids, status='received')
             order.save()
+
+            # Update the newly created order with ratings and reviews
+            for dish_id, rating, review in zip(selected_dish_ids, ratings, reviews):
+                order.rating = float(rating)
+                order.review = review
+                order.save()
+
         return redirect('display_menu')
+
     menu_items = MenuItem.objects.all()
     return render(request, 'orders.html', {'menu_items': menu_items})
 
@@ -74,3 +73,41 @@ def update_status(request, order_id):
         except Order.DoesNotExist:
             pass
     return render(request, 'update_order.html', {'order_id': order_id})
+
+def chatbot(request):
+    
+
+    if request.method == 'POST':
+        user_message = request.POST.get('user_message')
+        chatbot_response = generate_chatbot_response(user_message)
+        chat_history.append({'user': user_message, 'chatbot': chatbot_response})
+    else:
+        user_message = None
+        chatbot_response = None
+
+    return render(request, 'chatbot.html', {
+        'user_message': user_message,
+        'chatbot_response': chatbot_response,
+        'chat_history': chat_history
+    })
+
+
+def generate_chatbot_response(user_message):
+    user_message = user_message.lower()
+
+    if user_message == 'menu':
+        menu_items = MenuItem.objects.all()
+        menu_response = "<strong>Here's the list of available dishes:</strong><ul>"
+        for item in menu_items:
+            menu_response += f"<li>{item.dish_name}</li>"
+        menu_response += "</ul>"
+        return menu_response
+    elif user_message == 'order':
+        order_response = '<strong>Sure, let me help you place an order.:</strong> <ol> <li> In the homepage you should see a Take New Order button.</li> <li> Click the button.</li> <li> Then you will be redirected to the Take New Orders Page.</li> <li> After being redirected just follow the form and press the submit button. A new order will be created.</li> </ol>'
+        return order_response
+    elif user_message == "hi":
+        return 'Hello! How can I assist you today? </br>'
+    elif user_message == 'bye':
+        return 'Goodbye! Have a great day! </br>'   
+    else:
+        return "I'm sorry, I didn't understand your message." 

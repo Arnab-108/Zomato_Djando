@@ -8,5 +8,6 @@ urlpatterns = [
     path('update/<str:dish_id>/', views.update, name='update'),
     path('take_order/', views.take_order, name='take_order'),
     path('update_status/<str:order_id>/', views.update_status, name='update_status'),
+    path('chatbot/', views.chatbot, name='chatbot'),
     # Add more URL patterns for other views
 ]

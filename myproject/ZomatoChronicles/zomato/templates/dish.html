@@ -151,18 +151,7 @@
 </head>
 
 <body>
-    <!-- <h1>Menu</h1>
-    <ul>
-        {% for item in menu_items %}
-            <li>
-                <strong>{{ item.dish_name }}</strong>
-                Price: ${{ item.price }}
-                Availability: {% if item.availability %}Available{% else %}Not Available{% endif %}
-                <a href="{% url 'update' item.id %}"><button>Update</button></a>
-            </li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'add_dish' %}"><button>Add New Dish</button></a> -->
+   
     <div class="menu-container">
         <h1><i class="fas fa-utensils" style="color: #e74c3c;"></i> Menu</h1>
         <div class="menu-items">
@@ -191,12 +180,13 @@
         <div class="orders">
             {% for order in orders %}
             <div class="order">
-                <p><strong>Order ID:</strong> {{ order_id }}</p>
                 <p><strong>Customer:</strong> {{ order.customer_name }}</p>
                 <p><strong>Dishes:</strong> {% for dish_id in order.dish_ids %}
                     {{ dish_id|get_dish_name }},
                 {% endfor %}</p>
                 <p><strong>Status:</strong> {{ order.status }}</p>
+                <p><strong>Rating:</strong> {{ order.rating }}</p>
+                <p><strong>Review:</strong> {{ order.review }}</p>
                 <a class="status-action" href="{% url 'update_status' order.id %}">Update Status</a>
             </div>
             {% endfor %}
@@ -204,6 +194,7 @@
         <div class="action-buttons">
             <a class="action-button" href="{% url 'take_order' %}"><i class="fas fa-plus"></i> Take New Order</a>
             <a class="action-button" href="{% url 'add_dish' %}"><i class="fas fa-plus"></i> Add New Dish</a>
+            <a class="action-button" href="{% url 'chatbot' %}"><i class="fas fa-plus"></i> Need Help?</a>
         </div>
 
 </body>

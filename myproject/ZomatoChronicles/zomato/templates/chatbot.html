@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomato Chatbot</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            width: 500px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #3498db;
+            color: white;
+            margin: 0;
+        }
+
+        #chat-container {
+            max-height: 500px;
+            overflow-y: scroll;
+            padding: 20px;
+        }
+
+        .user-message {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .chatbot-message {
+            margin-bottom: 10px;
+            color: #27ae60;;
+            font-style: italic;
+        }
+
+        #form-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background-color: white;
+            box-shadow: 0px -1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            margin: 0;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Zomato Chatbot</h1>
+    <div id="chat-container">
+        {% for message in chat_history %}
+            <div class="user-message">You: {{ message.user }}</div>
+            <div class="chatbot-message"> <strong>Alpha:</strong> {{ message.chatbot|safe }}</div>
+        {% endfor %}
+    </div>
+    
+    <div id="form-container">
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="user_message" placeholder="Type your message">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</body>
+</html>

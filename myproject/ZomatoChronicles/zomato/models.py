@@ -10,4 +10,5 @@ class Order(Document):
     customer_name = StringField(required=True)
     dish_ids = ListField(StringField())  # List of dish IDs
     status = StringField()
-
+    rating = FloatField()  # Add a field for ratings
+    review = StringField()

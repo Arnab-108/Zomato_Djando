@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from django.http import HttpResponse
 # views.py
 from .models import MenuItem, Order
 
@@ -44,11 +45,9 @@ def take_order(request):
     if request.method == 'POST':
         customer_name = request.POST.get('customer_name')
         selected_dish_ids = request.POST.getlist('selected_dishes')
-        ratings = float(request.POST.get('ratings'))
-        reviews = request.POST.get('reviews') 
         
         if customer_name and selected_dish_ids:
-            order = Order(customer_name=customer_name, dish_ids=selected_dish_ids, status='received' , rating=ratings , review = reviews)
+            order = Order(customer_name=customer_name, dish_ids=selected_dish_ids, status='received' , rating=0.0 , review = "None")
             order.save()
 
         return redirect('display_menu')
@@ -57,19 +56,27 @@ def take_order(request):
     return render(request, 'orders.html', {'menu_items': menu_items})
 
 def update_status(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+    except Order.DoesNotExist:
+        return HttpResponse("Order not found", status=404)
+
     if request.method == 'POST':
         new_status = request.POST.get('new_status')
-        try:
-            order = Order.objects.get(id=order_id)
-            order.status = new_status
-            order.save()
-            return redirect('display_menu')
-        except Order.DoesNotExist:
-            pass
-    return render(request, 'update_order.html', {'order_id': order_id})
+        new_rating = int(request.POST.get('new_rating'))
+        new_review = request.POST.get('new_review')
+
+        order.status = new_status
+        order.rating = new_rating
+        order.review = new_review
+        order.save()
+
+        return redirect('display_menu')
+
+    return render(request, 'update_order.html', {'order': order})
+
 
 def chatbot(request):
-    
 
     if request.method == 'POST':
         user_message = request.POST.get('user_message')

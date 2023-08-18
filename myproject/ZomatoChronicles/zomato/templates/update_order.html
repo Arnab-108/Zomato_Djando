@@ -66,7 +66,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Update Order Status</h1>
+        <h1>Update Order Status, Rating, and Review</h1>
         <p>Order ID: {{ order.id }}</p>
         <form method="post">
             {% csrf_token %}
@@ -78,7 +78,19 @@
                 <option value="delivered">Delivered</option>
             </select>
             <br>
-            <input type="submit" value="Update Status">
+            <label for="new_rating">New Rating:</label>
+            <select id="new_rating" name="new_rating">
+                <option value="1">1 (Poor)</option>
+                <option value="2">2 (Fair)</option>
+                <option value="3">3 (Good)</option>
+                <option value="4">4 (Very Good)</option>
+                <option value="5">5 (Excellent)</option>
+            </select>
+            <br>
+            <label for="new_review">New Review:</label>
+            <textarea id="new_review" name="new_review" rows="4"></textarea>
+            <br>
+            <input type="submit" value="Update Status, Rating, and Review">
             <br>
             <a href="{% url 'display_menu' %}">Back to Menu</a>
         </form>

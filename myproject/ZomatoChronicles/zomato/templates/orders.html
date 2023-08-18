@@ -40,6 +40,7 @@
         }
 
         .submit-button {
+            margin-top: 2vh;
             background-color: #e67e22;
             color: white;
             padding: 10px 20px;
@@ -52,6 +53,7 @@
 
         .submit-button:hover {
             background-color: #d35400;
+            
         }
 
         .back-link {
@@ -90,7 +92,7 @@
                 {% endfor %}
             </div>
 
-            <div class="rating-review">
+            <!-- <div class="rating-review">
                 <label for="rating_{{ item.id }}">Rating:</label>
                 <input type="number" id="rating_{{ item.id }}" name="ratings" min="1" max="5"
                     class="input-field" required>
@@ -98,7 +100,7 @@
                 <label for="review_{{ item.id }}">Review:</label>
                 <textarea id="review_{{ item.id }}" name="reviews" rows="2"
                     class="input-field"></textarea>
-            </div>
+            </div> -->
             <button class="submit-button" type="submit">Place Order</button>
         </form>
         <a class="back-link" href="{% url 'display_menu' %}">Back to Menu</a>

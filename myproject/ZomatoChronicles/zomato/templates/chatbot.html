@@ -70,6 +70,16 @@
             border-radius: 0 5px 5px 0;
             cursor: pointer;
         }
+        .back-link {
+            display: block;
+            margin-top: 10px;
+            color: #e67e22;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -87,6 +97,7 @@
             <input type="text" name="user_message" placeholder="Type your message">
             <button type="submit">Send</button>
         </form>
+        <a class="back-link" href="{% url 'display_menu' %}">Back to Menu</a>
     </div>
 </body>
 </html>

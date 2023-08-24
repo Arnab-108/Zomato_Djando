@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-# import mongoengine
+import mongoengine
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -75,14 +75,14 @@ WSGI_APPLICATION = 'ZomatoChronicles.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-# MONGO_DBNAME = 'zomato_db'
-# MONGO_USERNAME = 'arnabadhikary007'
-# MONGO_PASSWORD = 'arnabadhikary'
-# MONGO_CLUSTER_NAME = 'cluster0'
+MONGO_DBNAME = 'zomato_db'
+MONGO_USERNAME = 'arnabadhikary007'
+MONGO_PASSWORD = 'arnabadhikary'
+MONGO_CLUSTER_NAME = 'cluster0'
 
-# MONGO_URI = f'mongodb+srv://arnabadhikary007:arnabadhikary@cluster0.xrv0a3m.mongodb.net/zomato_db?retryWrites=true&w=majority'
+MONGO_URI = f'mongodb+srv://arnabadhikary007:arnabadhikary@cluster0.xrv0a3m.mongodb.net/zomato_db?retryWrites=true&w=majority'
 
-# mongoengine.connect(host=MONGO_URI, db=MONGO_DBNAME)
+mongoengine.connect(host=MONGO_URI, db=MONGO_DBNAME)
 
 
 # Password validation
